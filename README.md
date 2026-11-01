@@ -97,10 +97,12 @@ python ../tools/evaluate.py --data .. --predictions val_predictions.csv --output
 ### 演示 Notebook
 
 ```bash
+python -m venv .venv
+.venv/bin/pip install -r requirements.txt
 jupyter notebook 02_demo_run.ipynb
 ```
 
-在仓库根目录启动。分步：数据读取 → 可选训练 → 预测 → 设定时间区间绘制预测/实测曲线 → 南网两项指标回测表（3 场站 + 三站等权）。需本地已有 `cache/samples_val.parquet`（`python train.py --stage samples`）及数据包路径 `PV2H_DATA`。
+在仓库根目录启动；Jupyter 内核请选上述 `.venv`（可避免系统 Python 与 pyarrow 不兼容）。分步：数据读取 → 可选训练 → 预测 → 曲线 → 南网回测；需 `cache/samples_val.parquet`（`python train.py --stage samples`）及 `PV2H_DATA`。
 
 ### 打包
 

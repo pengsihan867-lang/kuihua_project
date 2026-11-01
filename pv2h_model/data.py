@@ -57,9 +57,10 @@ class PowerStore:
         return pd.Series(self.power[i], index=self.minutes, name=station_id)
 
 
-def make_release(cache_blocks: int = 60):
+def make_release(data_root: Path | str | None = None, *, cache_blocks: int = 60):
+    root = Path(data_root) if data_root is not None else config.DATA_ROOT
     if str(config.TOOLS_DIR) not in sys.path:
         sys.path.insert(0, str(config.TOOLS_DIR))
     from pv2h import Release  # noqa: WPS433
 
-    return Release(config.DATA_ROOT, cache_blocks=cache_blocks)
+    return Release(root, cache_blocks=cache_blocks)

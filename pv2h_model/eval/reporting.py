@@ -40,12 +40,10 @@ def score_rows_metric(samples: pd.DataFrame, pred: np.ndarray | pd.Series) -> di
     return score_rows(use, pred_col="pred")
 
 
-def nanwang_report_table(official: dict) -> pd.DataFrame:
+def nanwang_report_table(official: dict, *, blank: str = "—") -> pd.DataFrame:
     """
-    展示用表：3 个场站 + 三站等权，共 4 行。
-    两列南网指标（TASK §6.3）：
-      - 场站南网日均准确率 A_s
-      - 三站等权南网日均准确率（仅汇总行填值，场站行留空或重复说明）
+    展示用表：3 个场站 + 三站等权，共 4 行、两列南网指标。
+    场站行只填 A_s，汇总行只填 Score；另一列用 blank（默认「—」），避免 NaN 误解为空数据。
     """
     per = official["station_daily_accuracy_percent"]
     total = official["score_percent"]
@@ -55,17 +53,40 @@ def nanwang_report_table(official: dict) -> pd.DataFrame:
             {
                 "统计对象": sid,
                 "场站南网日均准确率_%": round(per[sid], 4),
-                "三站等权南网日均准确率_%": np.nan,
+                "三站等权南网日均准确率_%": blank,
             }
         )
     rows.append(
         {
             "统计对象": "三站等权",
-            "场站南网日均准确率_%": np.nan,
+            "场站南网日均准确率_%": blank,
             "三站等权南网日均准确率_%": round(total, 4),
         }
     )
     return pd.DataFrame(rows)
+
+
+def setup_matplotlib_cjk() -> None:
+    """Notebook / 脚本绘图中文标题（macOS / Windows 常见字体）。"""
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+
+    candidates = (
+        "PingFang SC",
+        "Arial Unicode MS",
+        "Heiti SC",
+        "STHeiti",
+        "SimHei",
+        "Microsoft YaHei",
+        "Noto Sans CJK SC",
+        "WenQuanYi Micro Hei",
+    )
+    available = {f.name for f in font_manager.fontManager.ttflist}
+    for name in candidates:
+        if name in available:
+            plt.rcParams["font.sans-serif"] = [name, "DejaVu Sans"]
+            break
+    plt.rcParams["axes.unicode_minus"] = False
 
 
 def predictions_from_samples(samples: pd.DataFrame, pred: np.ndarray | pd.Series) -> pd.DataFrame:

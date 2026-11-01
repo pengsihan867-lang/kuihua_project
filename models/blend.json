@@ -1,0 +1,122 @@
+{
+  "members": [
+    "lgbm_pc2",
+    "lgbm_kt",
+    "lgbm_l1",
+    "lgbm_perlead",
+    "lgbm_pc3",
+    "lgbm_pc_xt",
+    "lgbm_pc_dart",
+    "lgbm_pc_lr03",
+    "lgbm_pc_deep"
+  ],
+  "weights": [
+    0.1111111111111111,
+    0.1111111111111111,
+    0.1111111111111111,
+    0.1111111111111111,
+    0.1111111111111111,
+    0.1111111111111111,
+    0.1111111111111111,
+    0.1111111111111111,
+    0.1111111111111111
+  ],
+  "postprocess": "clip>=0; night(clearsky<0.02)->station median",
+  "protocol": "Aug official-metric rounds, Jan-Aug refit *1.15, equal blend; train-only stats",
+  "val_score_rows": {
+    "score_percent": 84.9377564835699,
+    "stations": {
+      "S01": 86.17425828484957,
+      "S02": 85.54678177841178,
+      "S03": 83.09222938744836
+    }
+  },
+  "night_medians": {
+    "S01": 0.0047619047619047615,
+    "S02": 0.0025061514626811263,
+    "S03": 0.0
+  },
+  "power_steps": 192,
+  "cloud_frames": 7,
+  "cloud_bands": [
+    "B03",
+    "B04",
+    "B13",
+    "B08"
+  ],
+  "notes": "9 tree members; sklearn MLP dropped due to numerical instability on this feature set",
+  "chosen": {
+    "lgbm_pc2": {
+      "params": {
+        "seed": 49,
+        "feature_fraction": 0.6,
+        "bagging_fraction": 0.7,
+        "num_leaves": 95,
+        "min_data_in_leaf": 100
+      }
+    },
+    "lgbm_kt": {
+      "params": {}
+    },
+    "lgbm_l1": {
+      "params": {
+        "objective": "l1",
+        "metric": "l1"
+      }
+    },
+    "lgbm_perlead": {},
+    "lgbm_pc3": {
+      "params": {
+        "learning_rate": 0.03,
+        "num_leaves": 127,
+        "min_data_in_leaf": 200,
+        "feature_fraction": 0.7,
+        "seed": 53
+      }
+    },
+    "lgbm_pc_xt": {
+      "params": {
+        "extra_trees": true,
+        "num_leaves": 127,
+        "min_data_in_leaf": 80,
+        "feature_fraction": 0.7,
+        "seed": 65
+      }
+    },
+    "lgbm_pc_dart": {
+      "params": {
+        "boosting_type": "dart",
+        "drop_rate": 0.12,
+        "num_leaves": 95,
+        "seed": 73
+      }
+    },
+    "lgbm_pc_lr03": {
+      "params": {
+        "learning_rate": 0.03,
+        "num_leaves": 127,
+        "min_data_in_leaf": 120,
+        "seed": 79
+      }
+    },
+    "lgbm_pc_deep": {
+      "n_hold": 160,
+      "hold_score": 83.46266423398345,
+      "n_refit": 184,
+      "params": {
+        "num_leaves": 127,
+        "min_data_in_leaf": 40,
+        "max_depth": -1,
+        "seed": 83
+      }
+    }
+  },
+  "val_official": {
+    "station_daily_accuracy_percent": {
+      "S01": 86.17425828484957,
+      "S02": 85.54678177841178,
+      "S03": 83.09222938744836
+    },
+    "score_percent": 84.9377564835699
+  }
+}

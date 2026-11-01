@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+cache/
+dist/
+*.csv
+!EXPERIMENTS.txt
+.DS_Store
+_snapshot/
+artifacts/
+.pytest_cache/
+val_predictions.csv
+predictions.csv
+score.json

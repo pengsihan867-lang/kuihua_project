@@ -1,0 +1,57 @@
+PV2H 实验记录（提交前归档）
+================================
+指标：官方南网日均准确率（%）
+划分：训练 1–8 月拟合；验证 9–10 月报告；无 val 窥视用于选权/选轮（轮数在 8 月 hold 上按官方指标选）
+
+一、阶梯成绩（验证集）
+---------------------
+step  model                 score   S01     S02     S03
+0     zero                  62.89   64.56   63.86   60.23
+1     persistence           71.07   73.40   69.62   70.19
+2     smart_persistence     80.93   82.29   81.59   78.91
+3     lgbm_power_only       83.72   84.65   84.14   82.36   (41 feat)
+4     lgbm_power_cloud      84.49   85.56   85.05   82.87   (210 feat)
+5     lgbm_openfe           84.35   —— 负增益，交互特征未超过 power+cloud
+6     xgb_power_cloud       84.45
+7     avg_lgbm_xgb          84.53
+8     lgbm_pc_refit         84.67   Aug 官方指标选轮 + Jan–Aug 重训
+9     blend_v3_avg7         84.98   7 成员等权
+10    best_subset_by_hold   85.00   10 成员等权（含 pc）
+11    boost_pc2_swap        85.005  production：lgbm_pc2 替换 lgbm_pc
+
+最终 production 成员（等权 0.1）：
+  lgbm_pc2, lgbm_kt, lgbm_l1, lgbm_perlead, mlp,
+  lgbm_pc3, lgbm_pc_xt, lgbm_pc_dart, lgbm_pc_lr03, lgbm_pc_deep
+
+二、负结果 / 无增益
+-----------------
+- OpenFE 交互特征：验证低于 power+cloud
+- NNLS / SLSQP / 收缩权重：hold 上拟合的权重在 val 上均不如等权
+- 按 lead 选成员、仿射校准、S03 仿射、长 lead 切分：无提升或负增益
+- B05/B06 额外云波段：并入融合后略降
+- DL lite（tabular MLP / 云 CNN）：不可行或低于树模型
+- 加 persistence 作成员、trimmed mean：略差
+
+三、滚动按月（固定 Jan–Aug 模型，逐起报打分；非每月重训）
+-------------------------------------------------------
+训练期（in-sample 参考）官方整段：88.67%
+  01 90.68  02 90.84  03 90.81  04 88.21
+  05 86.74  06 86.94  07 87.49  08 87.58
+验证期（OOS）官方整段：84.996%
+  09 84.79  10 85.22
+
+四、协议要点
+-----------
+- 功率截止 t-15；云图截止 floor10(t-20)
+- early stopping 按 L2 会欠拟合；用 8 月官方指标选轮，refit 轮数 = n* × 1.15
+- 未使用外部预训练模型
+- 提交整理阶段：统计量改为仅训练集拟合，并重训成员（见 README / train.py）
+
+五、提交包重训结果（train-only stats）
+------------------------------------
+- 官方验证（离线样本融合）：84.938%（S01 86.17 / S02 85.55 / S03 83.09）
+- 官方验证（在线 Release.inputs 逐起报 5848 次）：84.938%
+  按月：09 月 84.70% / 10 月 85.18%
+- production：9 树成员等权（sklearn MLP 在本特征集数值不稳定，已去掉）
+- 相对整理前 ~85.005：约 -0.07 pp（统计量改 train-only + 样本重建的正常波动）
+- 在线与离线官方分差 < 0.001 pp

@@ -15,7 +15,7 @@ INCLUDE = [
     "requirements.txt",
     "predict.py",
     "train.py",
-    "notebooks",
+    "02_demo_run.ipynb",
     "pv2h_model",
     "models",
     "scripts",

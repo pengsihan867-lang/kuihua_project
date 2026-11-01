@@ -94,6 +94,15 @@ python scripts/evaluate_split.py --data .. --split val
 python ../tools/evaluate.py --data .. --predictions val_predictions.csv --output score.json
 ```
 
+### 演示 Notebook
+
+```bash
+cd notebooks
+jupyter notebook 02_demo_run.ipynb
+```
+
+分步：数据读取 → 可选训练 → 预测 → 设定时间区间绘制预测/实测曲线 → 南网两项指标回测表（3 场站 + 三站等权）。需本地已有 `cache/samples_val.parquet`（`python train.py --stage samples`）及数据包路径 `PV2H_DATA`。
+
 ### 打包
 
 ```bash
